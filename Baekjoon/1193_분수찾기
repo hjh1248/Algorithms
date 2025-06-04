@@ -1,0 +1,14 @@
+n = int(input())
+
+a = 0
+
+while 1:
+    a += 1
+    if a >= n:
+        if a % 2 ==0:
+            print(str(n)+'/'+str(a-n+1))
+        else:
+            print(str(a-n+1)+'/'+str(n))
+        break
+    n -= a
+        
