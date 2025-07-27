@@ -15,14 +15,15 @@ class Main2503 {
         }
         int cnt = 0;
         for(int i=123; i<1000; i++){
-            if(isValid(questions, ""+i)) cnt++;
+            if(check(questions, ""+i)) cnt++;
         }
         System.out.println(cnt);
     }
-    static Boolean isValid(int[][] questions, String number){
+    static Boolean check(int[][] questions, String number){
         for(int i =0; i<3; i++){
             for(int j =0; j<3; j++){
                 if(i==j) continue;
+                if(number.charAt(j)=='0') return false;
                 if(number.charAt(i)==number.charAt(j)) return false;
             }
         }
