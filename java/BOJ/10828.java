@@ -6,26 +6,31 @@ class Main10828 {
         ArrayDeque<Integer> stack = new ArrayDeque<>();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(br.readLine());
+        StringBuilder sb = new StringBuilder();
         for(int line=1; line<=N; line++){
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            String str = st.nextToken();
-            if(str.equals("push")){
-                int num = Integer.parseInt(st.nextToken());
-                stack.push(num);
+            String[] command = br.readLine().split(" ");
+            switch (command[0]) {
+                case "push" -> {
+                    int num = Integer.parseInt(command[1]);
+                    stack.push(num);
                 }
-            if(str.equals("size")) System.out.println(stack.size());
-            if(str.equals("empty")){
-                if(stack.isEmpty()) System.out.println(1);
-                else System.out.println(0);
-            }
-            if(str.equals("top")){
-                if(stack.isEmpty()) System.out.println(-1);
-                else System.out.println(stack.peek());
-            }
-            if(str.equals("pop")) {
-                if(stack.isEmpty()) System.out.println(-1);
-                else System.out.println(stack.pop());
+                case "size" -> sb.append(stack.size()).append("\n");
+                case "empty" -> {
+                    if(stack.isEmpty()) sb.append(1).append("\n");
+                    else sb.append(0).append("\n");
+                }
+                case "top" -> {
+                    if(stack.isEmpty()) sb.append(-1).append("\n");
+                    else sb.append(stack.peek()).append("\n");
+                }
+                case "pop" -> {
+                    if(stack.isEmpty()) sb.append(-1).append("\n");
+                    else sb.append(stack.pop()).append("\n");
+                }
+                default -> {
+                }
             }
         }
+        System.out.println(sb);
     }
 }
