@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-public class Dice3 {
+public class Permutation {
 	static StringBuilder sb = new StringBuilder();
 	static boolean[] visited;
 	
