@@ -3,9 +3,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
  
-public class Multiple2 {
+public class Multiple3 {
     static int N;
-    static int R;
     static int L;
     static int[] nums;
     static int answer;
@@ -16,31 +15,33 @@ public class Multiple2 {
         int T = Integer.parseInt(br.readLine());
          
         for(int tc=1; tc<=T; tc++) {
-            String[] Tokens = br.readLine().split(" ");
-            N = Integer.parseInt(Tokens[0]);
-            R = Integer.parseInt(Tokens[1]);
-            L = Integer.parseInt(Tokens[2]);
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            N = Integer.parseInt(st.nextToken());
+            L = Integer.parseInt(st.nextToken());
             answer = -1;
 
-            StringTokenizer st = new StringTokenizer(br.readLine());
+            st = new StringTokenizer(br.readLine());
             nums = new int[N];
             
             for(int i=0; i<N; i++) {
                 nums[i] = Integer.parseInt(st.nextToken());
             }
-            multiple(0, 0, 1);
+            multiple(0, 1,0);
             sb.append("#").append(tc).append(" ").append(answer).append("\n");
         }
         System.out.println(sb);
     }
-    static void multiple(int start, int cnt, int mul){
-        if(cnt==R){
-            if(mul>L) return;
-            answer = (Math.max(answer, mul));
+    static void multiple(int idx, int mul, int cnt){
+        if(mul>L) return;
+
+        if(idx==N){
+            if(cnt==0) return;
+            answer = Math.max(answer,mul);
             return;
         }
-        for(int i=start; i<N; i++){
-            multiple(i+1, cnt+1, mul*nums[i]);
-        }
+        
+        multiple(idx+1, mul*nums[idx], cnt+1);
+        
+        multiple(idx+1, mul, cnt);
     }
 }
