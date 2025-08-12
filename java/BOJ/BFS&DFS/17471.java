@@ -4,8 +4,10 @@ import java.util.*;
 class Main {
     static int N = 0;
     static int[] population;
+    static int wholePopulation;
+    static boolean devideCheck;
     static ArrayList<Integer>[] list;
-    static int minDiff;
+    static int minDiff = -1;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -17,64 +19,85 @@ class Main {
         }
         StringTokenizer st = new StringTokenizer(br.readLine());
         for(int i=1; i<=N; i++){
-            population[i] = Integer.parseInt(st.nextToken());
+            int pop = Integer.parseInt(st.nextToken());;
+            population[i] = pop;
+            wholePopulation += pop;
         }
         for(int i=1; i<=N; i++){
             st = new StringTokenizer(br.readLine());
             int cnt = Integer.parseInt(st.nextToken());
-            for(int j=0; i<cnt; j++){
-                list[i].add(j);
+            for(int j=1; j<=cnt; j++){
+                list[i].add(Integer.parseInt(st.nextToken()));
             }
         }
+        devide(1, new HashSet<>(), new HashSet<>(), 0, 0);
+        System.out.println(minDiff);
     }
     public static void devide(int idx, Set<Integer> trueSet, Set<Integer> falseSet, int zonePopulation, int cnt){
-        if(cnt==N/2 || idx==N && cnt!=0){
+        if(cnt==N/2){
+            for(int i=idx; i<=N; i++){
+                falseSet.add(i);
+            }
             check(trueSet, falseSet, zonePopulation);
+            for(int i=idx; i<=N; i++){
+                falseSet.remove(i);
+            }
+            return;
+        }
+        if(idx>N){
+            check(trueSet, falseSet, zonePopulation);
+            return;
         }
         falseSet.add(idx);
         devide(idx + 1, trueSet, falseSet, zonePopulation, cnt);
-        falseSet.remove(falseSet.size()-1);
+        falseSet.remove(idx);
 
         trueSet.add(idx);
         int newZonePopulation = zonePopulation + population[idx];
         devide(idx + 1, trueSet, falseSet, newZonePopulation, cnt+1);
+        trueSet.remove(idx);
     }
     public static void check(Set<Integer> trueSet, Set<Integer> falseSet, int zonePopulation){
+        if(trueSet.isEmpty() || falseSet.isEmpty()) return;
         boolean trueOk = false;
         boolean falseOk = false;
         for(int i=1; i<=N; i++){
-            if(trueOk && falseOk){
-
-            }
             if(!trueOk && trueSet.contains(i)){
-                bfs(i, trueSet, new boolean[N+1]);
+                if(!bfs(i, trueSet, new boolean[N+1])) return;
+                else trueOk = true;
             }
-            if(!falseOk && falseSet.contains(i)){
-                bfs(i, falseSet, new boolean[N+1]);
+            else if(!falseOk && falseSet.contains(i)){
+                if(!bfs(i, falseSet, new boolean[N+1])) return;
+                else falseOk = true;
+            }
+            if(trueOk && falseOk){
+                if(!devideCheck){
+                    minDiff = Math.abs(2*zonePopulation - wholePopulation);
+                    devideCheck = true;
+                }
+                minDiff = Math.min(Math.abs(2*zonePopulation - wholePopulation), minDiff);
+                return;
             }
         }
     }
-    public static void bfs(int start, Set<Integer> set, boolean[] visited){
-        ArrayDeque<Point> queue = new ArrayDeque<>();
+    public static boolean bfs(int start, Set<Integer> set, boolean[] visited){
+        ArrayDeque<Integer> queue = new ArrayDeque<>();
         visited[start] = true;
-        queue.offer(new Point(start, 1));
+        queue.offer(start);
+        int cnt = 1;
         while(!queue.isEmpty()){
-            Point now = queue.poll();
-            for(int next:list[now.node]){
-                if(!visited[next]){
+            int now = queue.poll();
+            for(int next:list[now]){
+                if(!visited[next] && set.contains(next)){
                     visited[next] = true;
-                    
-                    queue.offer(new Point(next, now.cnt+1));
+                    cnt++;
+                    queue.offer(next);
                 }
             }
         }
-    }
-    static class Point{
-        int node, cnt;
-
-        public Point(int node, int cnt){
-            this.node = node;
-            this.cnt = cnt;
+        if(cnt==set.size()){
+            return true;
         }
+        else return false;
     }
 }
