@@ -5,24 +5,30 @@ class Main {
     static int N = 0;
     static int[] population;
     static int wholePopulation;
-    static boolean devideCheck;
     static ArrayList<Integer>[] list;
-    static int minDiff = -1;
+    static int minDiff = Integer.MAX_VALUE;
+    static boolean[] visited;
+    static ArrayDeque<Integer> queue = new ArrayDeque<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
         N = Integer.parseInt(br.readLine());
         population = new int[N + 1];
-        list = new ArrayList[N+1];
+        list = new ArrayList[N + 1];
+        visited = new boolean[N + 1];
+
         for(int i=1; i<=N; i++){
             list[i] = new ArrayList<>();
         }
+
         StringTokenizer st = new StringTokenizer(br.readLine());
         for(int i=1; i<=N; i++){
-            int pop = Integer.parseInt(st.nextToken());;
+            int pop = Integer.parseInt(st.nextToken());
             population[i] = pop;
             wholePopulation += pop;
         }
+
         for(int i=1; i<=N; i++){
             st = new StringTokenizer(br.readLine());
             int cnt = Integer.parseInt(st.nextToken());
@@ -30,63 +36,47 @@ class Main {
                 list[i].add(Integer.parseInt(st.nextToken()));
             }
         }
-        devide(1, new HashSet<>(), new HashSet<>(), 0, 0);
-        System.out.println(minDiff);
+
+        Set<Integer> trueSet = new HashSet<>();
+        Set<Integer> falseSet = new HashSet<>();
+        trueSet.add(1);
+        divide(2, trueSet, falseSet, population[1]);
+        System.out.println(minDiff == Integer.MAX_VALUE ? -1 : minDiff);
     }
-    public static void devide(int idx, Set<Integer> trueSet, Set<Integer> falseSet, int zonePopulation, int cnt){
-        if(cnt==N/2){
-            for(int i=idx; i<=N; i++){
-                falseSet.add(i);
-            }
-            check(trueSet, falseSet, zonePopulation);
-            for(int i=idx; i<=N; i++){
-                falseSet.remove(i);
-            }
-            return;
-        }
+    public static void divide(int idx, Set<Integer> trueSet, Set<Integer> falseSet, int zonePopulation){
         if(idx>N){
             check(trueSet, falseSet, zonePopulation);
             return;
         }
+
         falseSet.add(idx);
-        devide(idx + 1, trueSet, falseSet, zonePopulation, cnt);
+        divide(idx + 1, trueSet, falseSet, zonePopulation);
         falseSet.remove(idx);
 
         trueSet.add(idx);
-        int newZonePopulation = zonePopulation + population[idx];
-        devide(idx + 1, trueSet, falseSet, newZonePopulation, cnt+1);
+        divide(idx + 1, trueSet, falseSet, zonePopulation + population[idx]);
         trueSet.remove(idx);
     }
-    public static void check(Set<Integer> trueSet, Set<Integer> falseSet, int zonePopulation){
+
+    static void check(Set<Integer> trueSet, Set<Integer> falseSet, int zonePopulation){
         if(trueSet.isEmpty() || falseSet.isEmpty()) return;
-        boolean trueOk = false;
-        boolean falseOk = false;
-        for(int i=1; i<=N; i++){
-            if(!trueOk && trueSet.contains(i)){
-                if(!bfs(i, trueSet, new boolean[N+1])) return;
-                else trueOk = true;
-            }
-            else if(!falseOk && falseSet.contains(i)){
-                if(!bfs(i, falseSet, new boolean[N+1])) return;
-                else falseOk = true;
-            }
-            if(trueOk && falseOk){
-                if(!devideCheck){
-                    minDiff = Math.abs(2*zonePopulation - wholePopulation);
-                    devideCheck = true;
-                }
-                minDiff = Math.min(Math.abs(2*zonePopulation - wholePopulation), minDiff);
-                return;
-            }
+        if(bfs(trueSet) && bfs(falseSet)){
+            minDiff = Math.min(Math.abs(2 * zonePopulation - wholePopulation), minDiff);
         }
     }
-    public static boolean bfs(int start, Set<Integer> set, boolean[] visited){
-        ArrayDeque<Integer> queue = new ArrayDeque<>();
+
+    static boolean bfs(Set<Integer> set){
+        queue.clear();
+        Arrays.fill(visited, false);
+
+        int start = set.iterator().next();
         visited[start] = true;
         queue.offer(start);
         int cnt = 1;
+
         while(!queue.isEmpty()){
             int now = queue.poll();
+
             for(int next:list[now]){
                 if(!visited[next] && set.contains(next)){
                     visited[next] = true;
@@ -95,9 +85,6 @@ class Main {
                 }
             }
         }
-        if(cnt==set.size()){
-            return true;
-        }
-        else return false;
+        return cnt==set.size();
     }
 }
