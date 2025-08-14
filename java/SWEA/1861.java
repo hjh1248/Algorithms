@@ -1,17 +1,15 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
 import java.util.StringTokenizer;
 
 class Swea1861 {
 	static int N;
 	static int[][] numbers;
-	static boolean[][] visited;
+	static int[][] visited;
 	static int max;
 	static int[] dr = {-1, 1, 0, 0};
 	static int[] dc = {0, 0, -1, 1};
-	static ArrayDeque<Point> q = new ArrayDeque<>();
 	static int start;
 	
 	public static void main (String[] args) throws IOException{
@@ -23,7 +21,7 @@ class Swea1861 {
 		for(int tc=1; tc<=T; tc++) {
 			N = Integer.parseInt(br.readLine());
 			numbers = new int[N][N];
-			visited = new boolean[N][N];
+			visited = new int[N][N];
 			start = Integer.MAX_VALUE;
 			max = 0;
 			
@@ -34,10 +32,15 @@ class Swea1861 {
 				}
 			}
 			
+			
 			for(int i=0; i<N; i++) {
 				for(int j=0; j<N; j++) {
-					if(!visited[i][j]) {
-						bfs(i, j);
+					if(dfs(i, j) >= max) {
+						if(visited[i][j] == max) start = Math.min(start, numbers[i][j]);
+						else {
+							max = visited[i][j];
+							start = numbers[i][j];
+						}
 					}
 				}
 			}
@@ -45,41 +48,19 @@ class Swea1861 {
 		}
 		System.out.println(sb);
 	}
-	static void bfs(int i, int j) {
-		q.clear();
-		q.offer(new Point(i, j, 1));
-		
-		while(!q.isEmpty()) {
-			Point cur = q.poll();
-			for(int dir=0; dir<4; dir++) {
-				int nr = cur.r + dr[dir];
-				int nc = cur.c + dc[dir];
-				int ndist = cur.dist + 1;
-				if(0<=nr && nr<N && 0<=nc && nc<N) {
-					if(numbers[cur.r][cur.c] -1 == numbers[nr][nc]) {
-						q.offer(new Point(nr, nc, ndist));
-						if(ndist>=max) {
-							if(ndist==max) start = Math.min(start, numbers[nr][nc]);
-							else{
-								max = ndist;
-								start = numbers[nr][nc];
-							}
-						}
-					}
+	static int dfs(int i, int j) {
+		if(visited[i][j]!=0) return visited[i][j];
+		visited[i][j] = 1;
+		for(int dir=0; dir<4; dir++) {
+			int nr = i + dr[dir];
+			int nc = j + dc[dir];
+			if(0<=nr && nr<N && 0<=nc && nc<N) {
+				if(numbers[i][j] + 1 == numbers[nr][nc]) {
+					visited[i][j] = dfs(nr, nc) + 1;
 				}
 			}
 		}
-	}
-	
-	static class Point {
-		int r;
-		int c;
-		int dist;
-		Point(int r, int c, int dist){
-			this.r = r;
-			this.c = c;
-			this.dist = dist;
-		}
+		return visited[i][j];
 	}
 }
 
