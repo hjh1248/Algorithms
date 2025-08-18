@@ -4,7 +4,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-public class 연습장{
+public class Swea5972{
     static int[] weights;
     static int N;
     static int answer;
