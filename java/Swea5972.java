@@ -4,12 +4,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-public class Swea5972{
+class Swea5972{
     static int[] weights;
     static int N;
     static int answer;
     static int[] dists;
     static ArrayList<int[]>[] list;
+    @SuppressWarnings("unchecked")
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());

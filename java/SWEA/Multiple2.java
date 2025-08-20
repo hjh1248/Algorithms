@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
  
-public class Multiple2 {
+class Multiple2 {
     static int N;
     static int R;
     static int L;

@@ -1,7 +1,7 @@
 
 import java.util.Scanner;
 
-public class Rotation {
+class Rotation {
     public static void main(String[] args) throws Exception{
 		Scanner sc = new Scanner(System.in);
 		int T;
