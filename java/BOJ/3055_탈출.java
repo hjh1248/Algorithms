@@ -15,6 +15,7 @@ class Main {
         boolean[][] visited = new boolean[R][C];
         int[] dr = {-1, 1, 0, 0};
         int[] dc = {0, 0, -1, 1};
+        int answer = 0;
 
 
         for(int i=0; i<R; i++){
@@ -25,27 +26,35 @@ class Main {
                     visited[i][j] = true;
                     q.offer(new int[] {i, j, 0});
                 }
-                if(c=='*'){
+                else if(c=='*'){
                     visited[i][j] = true;
-                    q.push(new int[] {i, j, 1});
+                    q.push(new int[] {i, j, -1});
                 }
+                else if(c=='X') visited[i][j] = true;
                 map[i][j] = c;
             }
         }
-        while(!q.isEmpty()){
+        
+        A:while(!q.isEmpty()){
             int[] cur = q.poll();
             for(int i=0; i<4; i++){
                 int nr = cur[0] + dr[i];
                 int nc = cur[1] + dc[i];
-                if(0<=nr && nr<R && 0<=nc && nc<R && !visited[nr][nc]){
-                    visited[nr][nc] = true;
-                    if(cur[2]==1){
-                        
+                int nd = cur[2]==-1 ? -1:cur[2]+1;
+                if(0<=nr && nr<R && 0<=nc && nc<C && !visited[nr][nc]){
+                    if(map[nr][nc]=='D'){
+                        if(cur[2]==-1){
+                            continue;
+                        }
+                        else answer = nd; break A;
                     }
+                    visited[nr][nc] = true;
+                    q.offer(new int[] {nr, nc, nd});
                 }
             }
             
         }
         
+        System.out.println(answer == 0 ? "KAKTUS":answer);
     }
 }
