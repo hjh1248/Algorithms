@@ -4,22 +4,22 @@ import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-
+ 
 class Swea_realBFS {
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = null;
         StringBuilder sb = new StringBuilder();
-
+ 
         int T = Integer.parseInt(br.readLine());
         ArrayDeque<Integer> q = new ArrayDeque<>();
-
+ 
         for(int tc=1; tc<=T; tc++){
             int N = Integer.parseInt(br.readLine());
             int[] mom = new int[N+1];
             @SuppressWarnings("unchecked")
             ArrayList<Integer>[] son = new ArrayList[N+1];
-
+ 
             for(int i=1; i<=N; i++){
                 son[i] = new ArrayList<>();
             }
@@ -30,35 +30,27 @@ class Swea_realBFS {
                 mom[i] = a;
             }
             q.offer(1);
-            int dist = -2;
+            int dist = 0;
             int tmp = 1;
             while(!q.isEmpty()){
-                System.out.println(q);
                 int cur = q.poll();
-                dist += 2;
                 boolean s = false;
-                while(mom[cur] != mom[tmp]){
+                int curCopy = cur;
+                while(curCopy != tmp){
                     if(!s){
-                        tmp = mom[tmp];
+                        curCopy = mom[curCopy];
                         s = true;
                     }
                     else{
-                        cur = mom[cur];
+                        tmp = mom[tmp];
                         s = false;
                     }
                     dist++;
                 }
-                
-                if(son[cur].size()==0){
-                    tmp = cur;
-                    continue;
-                }
+                tmp = cur;
                 for(int next : son[cur]){
                     q.offer(next);
-                    dist += 2;
-                    tmp = next;
                 }
-                dist--;
             }
             sb.append("#").append(tc).append(" ").append(dist).append("\n");
         }
