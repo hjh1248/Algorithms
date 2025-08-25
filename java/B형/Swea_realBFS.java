@@ -17,6 +17,7 @@ class Swea_realBFS {
         for(int tc=1; tc<=T; tc++){
             int N = Integer.parseInt(br.readLine());
             int[] mom = new int[N+1];
+            @SuppressWarnings("unchecked")
             ArrayList<Integer>[] son = new ArrayList[N+1];
 
             for(int i=1; i<=N; i++){
