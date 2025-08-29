@@ -8,7 +8,7 @@ import java.util.StringTokenizer;
 class Swea_realBFS {
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = null;
+        StringTokenizer st;
         StringBuilder sb = new StringBuilder();
  
         int T = Integer.parseInt(br.readLine());
