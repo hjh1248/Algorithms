@@ -12,6 +12,7 @@ class Main {
         
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
+        @SuppressWarnings("unchecked")
         ArrayList<int[]>[] list = new ArrayList[N+1];
         int[] dist = new int[N+1];
         for(int i=1; i<=N; i++){
@@ -33,6 +34,7 @@ class Main {
         dist[1] = 0;
         while(!pq.isEmpty()){
             int[] cur = pq.poll();
+            if(cur[1]>dist[cur[0]]) continue;
             for(int[] edge: list[cur[0]]){
                 int v = edge[0];
                 int w = edge[1];
