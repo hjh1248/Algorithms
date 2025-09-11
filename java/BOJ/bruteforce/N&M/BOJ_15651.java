@@ -14,7 +14,7 @@ public class BOJ_15651 {
         N = Integer.parseInt(Tokens[0]);
         M = Integer.parseInt(Tokens[1]);
 
-        perm(new ArrayList<Integer>());
+        perm(new ArrayList<>());
 
         System.out.println(sb);
     }
