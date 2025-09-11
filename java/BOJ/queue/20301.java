@@ -2,6 +2,7 @@ import java.io.*;
 import java.util.*;
 
 class Main20301 {
+    @SuppressWarnings("ConvertToTryWithResources")
     public static void main(String[] args) throws IOException {
         Scanner sc = new Scanner(System.in);
         StringBuilder sb = new StringBuilder();
