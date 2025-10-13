@@ -4,7 +4,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-public class BOJ_15663 {
+public class BOJ_15666 {
     static int N, M;
     static int[] arr;
     static boolean[] visited;
@@ -24,11 +24,11 @@ public class BOJ_15663 {
 
         Arrays.sort(arr);
 
-        perm(0, new int[M]);
+        perm(0, 0, new int[M]);
 
         System.out.println(sb);
     }
-    static void perm(int idx, int[] subArr){
+    static void perm(int idx, int start, int[] subArr){
         if(idx==M){
             for(int i=0; i<M; i++){
                 sb.append(subArr[i]);
@@ -38,16 +38,13 @@ public class BOJ_15663 {
             return;
         }
         int last_val = 0;
-        for(int i=0; i<N; i++){
-            if(visited[i]) continue;
-
+        for(int i=start; i<N; i++){
             if(arr[i] == last_val) continue; 
 
             subArr[idx] = arr[i];
-            visited[i] = true;
             last_val = arr[i];
 
-            perm(idx+1, subArr);
+            perm(idx+1, i, subArr);
             visited[i] = false;
         }
     }
