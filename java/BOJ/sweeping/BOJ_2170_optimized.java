@@ -4,7 +4,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-public class BOJ_2170 {
+public class BOJ_2170_optimized {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(br.readLine());
@@ -16,27 +16,22 @@ public class BOJ_2170 {
             StringTokenizer st = new StringTokenizer(br.readLine());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
-            answer += b-a;
-            map.add(new int[] {a, 0});
-            map.add(new int[] {b, 1});
+            map.add(new int[] {a, b});
         }
 
-        map.sort((a, b) -> a[0] - b[0]);
+        map.sort((a, b) -> a[0] == b[0] ? a[1] - b[1] : a[0] - b[0]);
         
-        int count = 0;
-        int prev = 0;
+        int start = -1000000000;
+        int end = -1000000000;
         for(int[] node: map){
-            if(node[1] == 0){
-                answer -= (node[0] - prev)*(count-1==-1?0:count-1);
-                count++;
-                prev = node[0];
+            if(end<node[0]){
+                answer += end-start;
+                start = node[0];
+                end = node[1];
             }
-            else{
-                answer -= (node[0] - prev)*(count-1==-1?0:count-1);
-                prev = node[0];
-                count--;
-            }
+            else end=Math.max(end, node[1]);
         }
+        answer += end-start;
 
         System.out.println(answer);
 
