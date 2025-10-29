@@ -47,7 +47,6 @@ public class SWEA_1249 {
             int cr = cur[0];
             int cc = cur[1];
             int dist = cur[2];
-            System.out.println(cr + " " + cc + " " + dist);
 
             if(dists[cr][cc]<dist) continue;
 
