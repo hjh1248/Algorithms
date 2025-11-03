@@ -23,21 +23,36 @@ public class BOJ_1197 {
         for(int i=0; i<E; i++){
             st = new StringTokenizer(br.readLine());
             edges[i][0] = Integer.parseInt(st.nextToken());
-            edges[i][0] = Integer.parseInt(st.nextToken());
-            edges[i][0] = Integer.parseInt(st.nextToken());
+            edges[i][1] = Integer.parseInt(st.nextToken());
+            edges[i][2] = Integer.parseInt(st.nextToken());
         }
         Arrays.sort(edges, (a, b) -> a[2] - b[2]);
 
-        for(int i=0; i<E; i++){
-
+        for(int[] edge: edges){
+            if(union(edge[0], edge[1])){
+                answer += edge[2];
+            }
         }
+        System.out.println(answer);
 
     }
     static int find(int n){
         if(parent[n] == 0) return n;
-        return parent[n] = find(n);
+        return parent[n] = find(parent[n]);
     }
     static boolean union(int a, int b){
-        return false;
+        int pa = find(a);
+        int pb = find(b);
+
+        if(pa==pb)return false;
+
+        if(rank[pa] >= rank[pb]){
+            parent[pb] = pa;
+            if(rank[pa]==rank[pb]) rank[pa]++;
+        }
+        else if(rank[pa] < rank[pb]){
+            parent[pa] = pb;
+        }
+        return true;
     }
 }
