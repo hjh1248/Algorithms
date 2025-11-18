@@ -18,15 +18,21 @@ public class BOJ_13911 {
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int V = Integer.parseInt(st.nextToken());
 		int E = Integer.parseInt(st.nextToken());
+
+		// 도로 저장
 		roads = new ArrayList[V+1];
+
+		//해당 집과 맥도날드, 스타벅스까지의 최단 거리
 		mcDists = new int[V+1];
 		starDists = new int[V+1];
+
 		for(int i=1; i<=V; i++) roads[i] = new ArrayList<>();
 		for(int i=0; i<E; i++) {
 			st = new StringTokenizer(br.readLine());
 			int a = Integer.parseInt(st.nextToken());
 			int b = Integer.parseInt(st.nextToken());
 			int d = Integer.parseInt(st.nextToken());
+			// 길 추가
 			roads[a].add(new int[] {b, d});
 			roads[b].add(new int[] {a, d});
 		}
@@ -38,6 +44,7 @@ public class BOJ_13911 {
 		int M = Integer.parseInt(st.nextToken()); 
 		int x = Integer.parseInt(st.nextToken());
 		
+		// 맥도날드 좌표를 전부 큐에 넣고 다익스트라
 		int[] mc = new int[M+1];
 		st = new StringTokenizer(br.readLine());
 		for(int i=1; i<=M; i++) mc[i] = Integer.parseInt(st.nextToken());
@@ -47,19 +54,22 @@ public class BOJ_13911 {
 		int S = Integer.parseInt(st.nextToken()); 
 		int y = Integer.parseInt(st.nextToken());
 		
+		// 스타벅스 좌표를 전부 큐에 넣고 다익스트라
 		int[] star = new int[S+1];
 		st = new StringTokenizer(br.readLine());
 		for(int i=1; i<=S; i++) star[i] = Integer.parseInt(st.nextToken());
 		dijkstra(S, star, false, y);
 		int min = Integer.MAX_VALUE;
 		
+		
 		for(int i=1; i<=V; i++) {
 			int cDist = mcDists[i];
 			int bDist = starDists[i];
 			if(cDist == 0 || bDist == 0 || cDist == Integer.MAX_VALUE || bDist == Integer.MAX_VALUE) continue;
+			// 맥도날드와 스타벅스까지의 최단거리 합이 가장 짧은 거리 저장
 			min = Math.min(min, cDist + bDist);
 		}
-		 System.out.println(min==Integer.MAX_VALUE ? -1:min);
+		System.out.println(min==Integer.MAX_VALUE ? -1:min);
 	}
 
 	static void dijkstra(int N, int[] starts, boolean isMc, int R) {
@@ -68,12 +78,14 @@ public class BOJ_13911 {
 		if(isMc) dists = mcDists;
 		else dists = starDists;
 		
+		// 맥도날드 or 스타벅스 좌표 전부 넣기
 		for(int i=1; i<=N; i++) {
 			int s = starts[i];
 			dists[s] = 0;
 			pq.offer(new Edge(s, 0));
 		}
 		
+		// 일반 다익스트라
 		while(!pq.isEmpty()){
 			Edge cur = pq.poll();
 			int curN = cur.to;
