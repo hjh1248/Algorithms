@@ -1,12 +1,13 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
 import java.util.StringTokenizer;
 
 public class BOJ_1194{
     static int N, M, answer;
     static char[][] map;
-    static boolean[] keyVisited;
+    static boolean[][][] visited;
     static int[] dr = {-1, 1, 0, 0};
     static int[] dc = {0, 0, -1, 1};
 
@@ -14,15 +15,14 @@ public class BOJ_1194{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         
-        answer = Integer.MAX_VALUE;
+        answer = -1;
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
         int startR = 0;
         int startC = 0;
 
         map = new char[N][M];
-        boolean[][] visited = new boolean[N][M];
-        keyVisited = new boolean[6];
+        visited = new boolean[N][M][64];
 
         for(int i=0; i<N; i++){
             String str = br.readLine();
@@ -36,41 +36,47 @@ public class BOJ_1194{
             }
         }
 
-        visited[startR][startC] = true;
-        dfs(startR, startC, 0, visited);
+        bfs(startR, startC);
 
-        System.out.println(answer==Integer.MAX_VALUE ? -1 : answer);
+        System.out.println(answer);
     }
-    static void dfs(int r, int c, int dist, boolean[][] visited){
-        for(int i=0; i<4; i++){
-            int nr = r + dr[i];
-            int nc = c + dc[i];
-            int nDist = dist+1;
+    static void bfs(int r, int c){
+        // r, c, 거리, 소유 열쇠 비트
+        ArrayDeque<int[]> q = new ArrayDeque<>();
+        visited[r][c][0] = true;
+        q.add(new int[] {r, c, 0, 0});
 
-            if(nr<0 || nr>=N || nc<0 || nc>=M) continue;
-            if(visited[nr][nc]) continue;
+        while(!q.isEmpty()){
+            int[] cur = q.poll();
+            int cr = cur[0];
+            int cc = cur[1];
+            int dist = cur[2];
+            int bit = cur[3];
 
-            char nextChar = map[nr][nc];
-            if(nextChar == '#') continue;
-            else if(nextChar == '1'){
-                answer = Math.min(answer, nDist);
-                return;
+            for(int i=0; i<4; i++){
+                int nr = cr + dr[i];
+                int nc = cc + dc[i];
+                int nDist = dist+1;
+                int nBit = bit;
+
+                if(nr<0 || nr>=N || nc<0 || nc>=M) continue;
+
+                char nextChar = map[nr][nc];
+                if(nextChar == '#') continue;
+                else if(nextChar == '1'){
+                    answer = nDist;
+                    return;
+                }
+                else if(nextChar - 'a' >= 0){
+                    nBit = nBit | 1 << (nextChar - 'a');
+                }
+                else if(nextChar - 'A' >= 0){
+                    if((nBit & 1 << (nextChar - 'A')) ==0) continue;
+                }
+                if(visited[nr][nc][nBit]) continue;
+                visited[nr][nc][nBit] = true;
+                q.add(new int[] {nr, nc, nDist, nBit});
             }
-            else if(nextChar - 'a' >= 0){
-                if(keyVisited[nextChar - 'a']) continue;
-                keyVisited[nextChar - 'a'] = true;
-                boolean[][] nextVisited = new boolean[N][M];
-                nextVisited[nr][nc] = true;
-                dfs(nr, nc, nDist, nextVisited);
-                keyVisited[nextChar - 'a'] = false;
-                continue;
-            }
-            else if(nextChar - 'A' >= 0){
-                if(!keyVisited[nextChar - 'A']) continue;
-            }
-            visited[nr][nc] = true;
-            dfs(nr, nc, nDist, visited);
-            visited[nr][nc] = false;
         }
     }
 }
