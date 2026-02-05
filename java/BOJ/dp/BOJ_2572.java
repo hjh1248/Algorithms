@@ -1,13 +1,12 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class BOJ_2572 {
-    static int N, answer;
-    static int[][] visited;
+    static int N, M, answer;
+    static int[][] dp;
     static ArrayList<int[]>[] map;
     static int[] cards;
 
@@ -20,15 +19,21 @@ public class BOJ_2572 {
         StringTokenizer st = new StringTokenizer(br.readLine());
         
         cards = new int[N+1];
-        for(int i=1; i<=N; i++){
+        for(int i=0; i<N; i++){
             cards[i] = convert(st.nextToken().charAt(0));
         }
 
         st = new StringTokenizer(br.readLine());
-        int M = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
         int K = Integer.parseInt(st.nextToken());
 
-        visited = new int[N+1][M+1];
+        dp = new int[N+1][M+1];
+        for(int i=0; i<=N; i++) {
+            for(int j=0; j<=M; j++) {
+                dp[i][j] = -1;
+            }
+        }
+
         map = new ArrayList[M+1];
         for(int i=1; i<=M; i++) map[i] = new ArrayList<>();
 
@@ -41,35 +46,22 @@ public class BOJ_2572 {
             map[u].add(new int[] {v, color});
             map[v].add(new int[] {u, color});
         }
-        bfs();
-        System.out.println(answer);
-
-    }
-    static void bfs(){
-        ArrayDeque<int[]> q = new ArrayDeque<>();
-        q.offer(new int[] {0, 1, 0});
-        while(!q.isEmpty()){
-            int[] cur = q.poll();
-            int dist = cur[0];
-            if(dist>N) break;
-            int village = cur[1];
-            int point = cur[2];
-            if(point < visited[dist+1][village]) continue;
-
-            for(int[] next: map[village]){
-                int nDist = dist + 1;
-                int nVillage = next[0];
-                int nPoint = point;
-
-                if(cards[dist]==next[1]) nPoint += 10;
-
-                if(nPoint >= visited[nDist][nVillage]){
-                    q.offer(new int[] {nDist, nVillage, nPoint});
-                    visited[nDist][nVillage] = nPoint;
+        
+        dp[0][1] = 0;
+        for(int i=0; i<N; i++){
+            for(int j=1; j<=M; j++){
+                if(dp[i][j] == -1) continue;
+                for(int[] next: map[j]){
+                    int nVillage = next[0];
+                    int nColor = next[1];
+                    int nPoint = dp[i][j];
+                    if(nColor == cards[i]) nPoint += 10;
+                    dp[i+1][nVillage] = Math.max(dp[i+1][nVillage], nPoint);
                 }
             }
         }
-        for(int i=1; i<N; i++) answer = Math.max(answer, visited[N][i]);
+        for(int i=1; i<=M; i++) answer = Math.max(answer, dp[N][i]);
+        System.out.println(answer);
     }
 
     static int convert(char c){
