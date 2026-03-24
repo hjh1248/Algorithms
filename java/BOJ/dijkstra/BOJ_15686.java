@@ -58,7 +58,7 @@ public class BOJ_15686 {
         for(int i=start; i<chickenIdx; i++){
             if(chickenIdx - i < M - idx) break;
             available[i] = true;
-            comb(start+1, idx+1);
+            comb(i+1, idx+1);
             available[i] = false;
         }
     }
