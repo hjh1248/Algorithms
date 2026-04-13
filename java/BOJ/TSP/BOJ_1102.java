@@ -9,10 +9,11 @@ public class BOJ_1102 {
     static int N, P;
     static int[][] dists;
     static int[] dp;
+    static boolean flag;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
-        int answer = INF;
         
         dists = new int[N][N];
         
@@ -35,22 +36,28 @@ public class BOJ_1102 {
         P = Integer.parseInt(br.readLine());
         dp = new int[1<<N];
         Arrays.fill(dp, -1);
-
-        System.out.println(dfs(visited, cnt));
         
-        System.out.println(answer);
+        flag = false;
+        int answer = dfs(visited, cnt);
+        System.out.println(flag ? answer:-1);
     }
 
     static int dfs(int visited, int cnt){
-        if(cnt==P) return 0;
+        if(cnt>=P){
+            flag = true;
+            return 0;
+        }
 
         if(dp[visited] != -1) return dp[visited];
 
         int min = INF;
         for(int i=0; i<N; i++){
-
+            if((visited & (1<<i)) == 0) continue;
+            for(int j=0; j<N; j++){
+                if(i==j || (visited & (1<<j)) != 0) continue;
+                min = Math.min(min, dists[i][j] + dfs(visited | 1 << j, cnt+1));
+            }
         }
-
-        return min;
+        return dp[visited] = min;
     }
 }
